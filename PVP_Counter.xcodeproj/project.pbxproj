@@ -16,6 +16,7 @@
 		5437537A2A26757500494032 /* PVP_CounterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 543753792A26757500494032 /* PVP_CounterTests.swift */; };
 		543753842A26757500494032 /* PVP_CounterUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 543753832A26757500494032 /* PVP_CounterUITests.swift */; };
 		543753862A26757500494032 /* PVP_CounterUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 543753852A26757500494032 /* PVP_CounterUITestsLaunchTests.swift */; };
+		543753932A267CDC00494032 /* Mothercode.otf in Resources */ = {isa = PBXBuildFile; fileRef = 543753922A267CDC00494032 /* Mothercode.otf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,6 +49,8 @@
 		5437537F2A26757500494032 /* PVP_CounterUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PVP_CounterUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		543753832A26757500494032 /* PVP_CounterUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PVP_CounterUITests.swift; sourceTree = "<group>"; };
 		543753852A26757500494032 /* PVP_CounterUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PVP_CounterUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		543753922A267CDC00494032 /* Mothercode.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Mothercode.otf; path = ../../../Downloads/mothercode/Mothercode.otf; sourceTree = "<group>"; };
+		543753942A267D4F00494032 /* PVP-Counter-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "PVP-Counter-Info.plist"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,9 +101,11 @@
 		543753622A26757200494032 /* PVP_Counter */ = {
 			isa = PBXGroup;
 			children = (
+				543753942A267D4F00494032 /* PVP-Counter-Info.plist */,
 				543753632A26757200494032 /* PVP_CounterApp.swift */,
 				543753652A26757200494032 /* ContentView.swift */,
 				543753672A26757500494032 /* Assets.xcassets */,
+				543753922A267CDC00494032 /* Mothercode.otf */,
 				5437536C2A26757500494032 /* Persistence.swift */,
 				5437536E2A26757500494032 /* PVP_Counter.xcdatamodeld */,
 				543753692A26757500494032 /* Preview Content */,
@@ -238,6 +243,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5437536B2A26757500494032 /* Preview Assets.xcassets in Resources */,
+				543753932A267CDC00494032 /* Mothercode.otf in Resources */,
 				543753682A26757500494032 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -428,6 +434,7 @@
 				DEVELOPMENT_TEAM = 6J4BMY9PNR;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "PVP-Counter-Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -457,6 +464,7 @@
 				DEVELOPMENT_TEAM = 6J4BMY9PNR;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "PVP-Counter-Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
