@@ -16,32 +16,34 @@ if (fs.existsSync(gameHistoryFilePath)) {
 
 fastify.post('/win', (request, reply) => {
   console.log(request.body);
-  reply.send();
+  reply.send({ message: 'Success' });
 });
 
 fastify.post('/score', (request, reply) => {
   console.log(request.body);
-  reply.send();
+  reply.send({ message: 'Success' });
 });
 
 fastify.post('/new', (request, reply) => {
   console.log(request.body);
-  reply.send();
+  reply.send({ message: 'Success' });
 });
 
 fastify.post('/delete', (request, reply) => {
   console.log(request.body);
-  reply.send();
+  reply.send({ message: 'Success' });
 });
 
 fastify.post('/open', (request, reply) => {
   console.log(request.body);
-  reply.send();
+  reply.send({ message: 'Success' });
+
 });
 
 fastify.post('/history', (request, reply) => {
   console.log(request.body);
-  reply.send();
+
+  reply.send({ message: 'Success' });
 });
 
 fastify.listen(port, (err, address) => {
