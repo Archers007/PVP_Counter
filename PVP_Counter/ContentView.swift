@@ -20,7 +20,7 @@ struct ContentView: View {
     @State private var uid = "edtrcfyvgbuhjgvcfrd"
     
     let games = ["PVZ Heros", "MTG", "Random Bet"]
-    let endpoint = "https://your-endpoint-url.com"
+    let endpoint = "https://pvsp.onrender.com"
     
     @State private var currentPage: Page = .home
     @State private var player1Input = ""
