@@ -46,7 +46,7 @@ fastify.post('/history', (request, reply) => {
   reply.send({ message: 'Success' });
 });
 
-fastify.listen(port, (err, address) => {
+fastify.listen({port, host: "0.0.0.0"}, (err, address) => {
   if (err) {
     console.error(err);
     process.exit(1);

@@ -20,7 +20,7 @@ struct ContentView: View {
     @State private var uid = "edtrcfyvgbuhjgvcfrd"
     
     let games = ["PVZ Heros", "MTG", "Random Bet"]
-    let endpoint = "https://pvsp.onrender.com"
+    let endpoint = "https://pvp-dfhh.onrender.com"
     
     @State private var currentPage: Page = .home
     @State private var player1Input = ""
@@ -252,18 +252,41 @@ struct ContentView: View {
         let url = URL(string: "\(endpoint)/win")!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
-        let bodyData = "winner=\(winner)&UID=\(UID)".data(using: .utf8)
-        request.httpBody = bodyData
+        
+        // Create the request body as a dictionary
+        let requestBody = ["winner": winner, "UID": UID]
+        
+        // Convert the request body to JSON data
+        let jsonData = try? JSONSerialization.data(withJSONObject: requestBody)
+        request.httpBody = jsonData
+        
+        // Set the appropriate headers for JSON content
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
         URLSession.shared.dataTask(with: request) { data, response, error in
             // Handle the response or error
             
+            if let error = error {
+                print("Error: \(error)")
+                return
+            }
+            
+            if let data = data {
+                if let responseJSON = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+                    print("Response: \(responseJSON)")
+                } else {
+                    let responseString = String(data: data, encoding: .utf8)
+                    print("Response: \(responseString ?? "")")
+                }
+            }
+            
             // Assuming you have a function named "updateScores" to update player1Score and player2Score
             DispatchQueue.main.async {
-                sendPostRequestToEndpointScore(UID:uid)
+//                sendPostRequestToEndpointScore(UID: UID)
             }
         }.resume()
     }
+
 
     func sendPostRequestToEndpointScore(UID: String) {
         let url = URL(string: "\(endpoint)/score")!
