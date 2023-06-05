@@ -15,7 +15,7 @@ if (fs.existsSync(gameHistoryFilePath)) {
 }
 
 fastify.post('/win', (request, reply) => {
-  console.log(request.body);
+  console.log(request);
   reply.send({ message: 'Success' });
 });
 
