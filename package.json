@@ -17,6 +17,7 @@
     },
     "dependencies": {
         "fastify": "^4.17.0",
-        "nodemon": "^2.0.21"
+        "nodemon": "^2.0.21",
+        "simple-git": "^3.19.0"
     }
 }

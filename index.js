@@ -1,5 +1,6 @@
 const fs = require('fs');
 const fastify = require('fastify')();
+const simpleGit = require('simple-git');
 const port = "9000"
 
 
@@ -13,9 +14,23 @@ if (fs.existsSync(gameHistoryFilePath)) {
   gameHistory = JSON.parse(gameHistoryData);
   console.log(gameHistory);
 }
+async function runGitPull() {
+  const git = simpleGit();
+
+  try {
+    await git.pull();
+    console.log('Git pull completed successfully.');
+  } catch (error) {
+    console.error('Error during git pull:', error);
+  }
+}
 
 fastify.post('/win', (request, reply) => {
   console.log(request);
+  reply.send({ message: 'Success' });
+});
+fastify.post('/ServerUpdate', (request, reply) => {
+  runGitPull();
   reply.send({ message: 'Success' });
 });
 

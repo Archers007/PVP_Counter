@@ -258,6 +258,7 @@ struct ContentView: View {
         
         // Convert the request body to JSON data
         let jsonData = try? JSONSerialization.data(withJSONObject: requestBody)
+        print(jsonData)
         request.httpBody = jsonData
         
         // Set the appropriate headers for JSON content
