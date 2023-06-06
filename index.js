@@ -1,7 +1,7 @@
 const fs = require('fs');
 const fastify = require('fastify')();
 const simpleGit = require('simple-git');
-const port = "9000"
+const port = "3000"
 
 
 const gameHistoryFilePath = 'gameHistory.json';
@@ -30,6 +30,7 @@ fastify.post('/win', (request, reply) => {
   reply.send({ message: 'Success' });
 });
 fastify.post('/ServerUpdate', (request, reply) => {
+  console.log("Updating");
   runGitPull();
   reply.send({ message: 'Success' });
 });
