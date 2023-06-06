@@ -31,7 +31,7 @@ fastify.post('/win', (request, reply) => {
   reply.send({ message: 'Success' });
 });
 
-app.post('/win', (req, res) => {
+fastify.post('/win', (req, res) => {
   const { winner, UID } = req.body;
 
   // Read the games.json file
@@ -62,7 +62,7 @@ app.post('/win', (req, res) => {
           return res.sendStatus(500);
         }
 
-        res.send(games);
+        res.send({games});
       });
     } else {
       console.error('Game not found for UID:', UID);
