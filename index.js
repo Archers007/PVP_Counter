@@ -25,11 +25,11 @@ async function runGitPull() {
   }
 }
 
-fastify.post('/win', (request, reply) => {
-  console.log(request.body);
+// fastify.post('/win', (request, reply) => {
+//   console.log(request.body);
 
-  reply.send({ message: 'Success' });
-});
+//   reply.send({ message: 'Success' });
+// });
 
 fastify.post('/win', (req, res) => {
   const { winner, UID } = req.body;
