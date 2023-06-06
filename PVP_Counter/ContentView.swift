@@ -76,7 +76,7 @@ struct ContentView: View {
                     .padding()
                     HStack{
                         Button(action: {
-                            sendPostRequestToEndpointWin(winner:"\(player1Name)",UID:uid)
+                            sendPostRequestToEndpointWin(winner:"\(player1Name)",UID:uid,game:games[selectedGame])
                         }) {
                             Text("\(player1Name) Wins")
                                 .font(.custom("Mothercode", size: 20))
@@ -87,7 +87,7 @@ struct ContentView: View {
                         }
                         
                         Button(action: {
-                            sendPostRequestToEndpointWin(winner:"\(player2Name)",UID:uid)
+                            sendPostRequestToEndpointWin(winner:"\(player2Name)",UID:uid,game:games[selectedGame])
                         }) {
                             Text("\(player2Name) Wins")
                                 .font(.custom("Mothercode", size: 20))
@@ -248,13 +248,13 @@ struct ContentView: View {
         }
     }
     
-    func sendPostRequestToEndpointWin(winner: String, UID: String) {
+    func sendPostRequestToEndpointWin(winner: String, UID: String, game: String) {
         let url = URL(string: "\(endpoint)/win")!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         
         // Create the request body as a dictionary
-        let requestBody = ["winner": winner, "UID": UID]
+        let requestBody = ["winner": winner, "UID": UID, "game": game]
         
         // Convert the request body to JSON data
         let jsonData = try? JSONSerialization.data(withJSONObject: requestBody)
