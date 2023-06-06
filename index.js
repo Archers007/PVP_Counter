@@ -62,7 +62,7 @@ app.post('/win', (req, res) => {
           return res.sendStatus(500);
         }
 
-        res.sendfile("games.json");
+        res.send(games);
       });
     } else {
       console.error('Game not found for UID:', UID);
