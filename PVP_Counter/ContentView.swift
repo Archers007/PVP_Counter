@@ -254,7 +254,7 @@ struct ContentView: View {
         request.httpMethod = "POST"
         
         // Create the request body as a dictionary
-        let requestBody = ["winner": winner, "UID": UID, "game": game]
+        let requestBody = ["winner": winner, "UID": UID, "gamePlayed": game]
         
         // Convert the request body to JSON data
         let jsonData = try? JSONSerialization.data(withJSONObject: requestBody)

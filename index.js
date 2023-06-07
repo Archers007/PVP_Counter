@@ -49,7 +49,7 @@ async function runNpmInstall() {
 // });
 
 fastify.post('/win', (req, res) => {
-  const { winner, UID } = req.body;
+  const { winner, UID, gamePlayed } = req.body;
 
   // Read the games.json file
   fs.readFile('games.json', 'utf8', (err, data) => {
@@ -65,12 +65,12 @@ fastify.post('/win', (req, res) => {
       const game = {
         date: getCurrentDate(),
         time: getCurrentTime(),
-        selectedGame: 'Chess', // Example value, modify as needed
+        selectedGame: gamePlayed, // Example value, modify as needed
         winner: winner
       };
-
+      let UIDSesh = generateGameId();
       // Add the new game to the Games object
-      games[UID].Games[generateGameId()] = game;
+      games[UID].Games[UIDSesh] = game;
 
       // Update the games.json file
       fs.writeFile('games.json', JSON.stringify(games, null, 2), 'utf8', (err) => {
@@ -79,7 +79,7 @@ fastify.post('/win', (req, res) => {
           return res.sendStatus(500);
         }
 
-        res.send({games});
+        res.send(games[UID].Games[UIDSesh]);
       });
     } else {
       console.error('Game not found for UID:', UID);
