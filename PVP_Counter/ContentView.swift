@@ -9,8 +9,8 @@ enum Page {
 }
 
 struct ContentView: View {
-    @State private var player1Name = "KIERAN"
-    @State private var player2Name = "ADAM"
+    @State private var player1Name = "Kieran"
+    @State private var player2Name = "Adam"
     @State private var player1Score = 6
     @State private var player2Score = 9
     @State private var selectedGame = 0
@@ -283,7 +283,7 @@ struct ContentView: View {
             
             // Assuming you have a function named "updateScores" to update player1Score and player2Score
             DispatchQueue.main.async {
-//                sendPostRequestToEndpointScore(UID: UID)
+                sendPostRequestToEndpointScore(UID: UID)
             }
         }.resume()
     }

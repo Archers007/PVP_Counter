@@ -7,16 +7,16 @@ const { exec } = require('child_process');
 const port = "9000"
 
 
-const gameHistoryFilePath = 'gameHistory.json';
-let gameHistory = [];
+// const gameHistoryFilePath = 'gameHistory.json';
+// let gameHistory = [];
 
-// Check if the game history JSON file exists
-if (fs.existsSync(gameHistoryFilePath)) {
-  // Read the game history JSON file and parse it into the gameHistory array
-  const gameHistoryData = fs.readFileSync(gameHistoryFilePath, 'utf8');
-  gameHistory = JSON.parse(gameHistoryData);
-  console.log(gameHistory);
-}
+// // Check if the game history JSON file exists
+// if (fs.existsSync(gameHistoryFilePath)) {
+//   // Read the game history JSON file and parse it into the gameHistory array
+//   const gameHistoryData = fs.readFileSync(gameHistoryFilePath, 'utf8');
+//   gameHistory = JSON.parse(gameHistoryData);
+//   console.log(gameHistory);
+// }
 async function runGitPull() {
   const git = simpleGit();
 
@@ -58,28 +58,28 @@ fastify.post('/win', (req, res) => {
       return res.sendStatus(500);
     }
 
-    let games = JSON.parse(data);
+    let json = JSON.parse(data);
 
     // Find the game with the matching UID
-    if (games[UID]) {
+    if (json[UID]) {
       const game = {
         date: getCurrentDate(),
         time: getCurrentTime(),
         selectedGame: gamePlayed, // Example value, modify as needed
         winner: winner
       };
-      let UIDSesh = generateGameId();
+      let GameUID = generateGameId();
       // Add the new game to the Games object
-      games[UID].Games[UIDSesh] = game;
+      json[UID].Games[GameUID] = game;
 
       // Update the games.json file
-      fs.writeFile('games.json', JSON.stringify(games, null, 2), 'utf8', (err) => {
+      fs.writeFile('games.json', JSON.stringify(json, null, 2), 'utf8', (err) => {
         if (err) {
           console.error('Error writing to games.json:', err);
           return res.sendStatus(500);
         }
 
-        res.send(games[UID].Games[UIDSesh]);
+        res.send(json[UID].Games[GameUID]);
       });
     } else {
       console.error('Game not found for UID:', UID);
@@ -122,8 +122,34 @@ fastify.post('/ServerNpm', (request, reply) => {
 
 fastify.post('/score', (request, reply) => {
   console.log(request.body);
-  reply.send({ message: 'Success' });
-});
+  const { UID } = request.body;
+  fs.readFile('games.json', 'utf8', (err, data) => {
+    if (err) {
+      console.error('Error reading games.json:', err);
+      return res.sendStatus(500);
+    }
+
+  let json = JSON.parse(data);
+  let session = json[UID];
+  console.log(session);
+  let player1 = session.PLAYERS.Player1;
+  let player2 = session.PLAYERS.Player2;
+  let p1score = 0;
+  let p2score = 0;
+  let gamesCount = Object.keys(session.Games)
+  for (const gameId of gamesCount) {
+    const game = session.Games[gameId];
+    // Perform actions with each game object
+    if(game.winner===player1){
+      p1score++
+    }else{
+      p2score++
+    }
+  }
+
+  reply.send({ player1Score: p1score, player2Score: p2score });
+
+})});
 
 fastify.post('/new', (request, reply) => {
   console.log(request.body);
