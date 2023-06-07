@@ -17,6 +17,32 @@ const port = "9000"
 //   gameHistory = JSON.parse(gameHistoryData);
 //   console.log(gameHistory);
 // }
+async function GameReset(){
+  exec("rm games.json", (error, stdout, stderr) => {
+    if (error) {
+      console.error(`Error: ${error.message}`);
+      return;
+    }
+    if (stderr) {
+      console.error(`stderr: ${stderr}`);
+      return;
+    }
+    console.log(`stdout: ${stdout}`);
+    console.log('File Deleted!');
+  });
+  exec("git checkout main -- games.json", (error, stdout, stderr) => {
+    if (error) {
+      console.error(`Error: ${error.message}`);
+      return;
+    }
+    if (stderr) {
+      console.error(`stderr: ${stderr}`);
+      return;
+    }
+    console.log(`stdout: ${stdout}`);
+    console.log('File Deleted!');
+  });
+}
 async function runGitPull() {
   const git = simpleGit();
 
@@ -117,6 +143,12 @@ fastify.post('/ServerUpdate', (request, reply) => {
 fastify.post('/ServerNpm', (request, reply) => {
   console.log("Updating");
   runNpmInstall();
+  reply.send({ message: 'Success' });
+});
+
+fastify.post('/ServerGFR', (request, reply) => {
+  console.log("Resetting Game FIle");
+  GameReset();
   reply.send({ message: 'Success' });
 });
 

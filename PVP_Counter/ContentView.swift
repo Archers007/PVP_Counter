@@ -112,6 +112,7 @@ struct ContentView: View {
                 
                 switch currentPage {
                 case .home:
+                    
                     Text("")
                         .font(.largeTitle)
                         .foregroundColor(.white)
@@ -205,6 +206,7 @@ struct ContentView: View {
                 
                 HStack {
                     Button(action: {
+                        sendPostRequestToEndpointScore(UID:uid)
                         currentPage = .home
                     }) {
                         Image(systemName: "house.fill")
@@ -293,28 +295,39 @@ struct ContentView: View {
         let url = URL(string: "\(endpoint)/score")!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
-        let bodyData = "UID=\(UID)".data(using: .utf8)
-        request.httpBody = bodyData
         
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            // Handle the response or error
+        let parameters: [String: Any] = [
+            "UID": UID
+        ]
+        
+        do {
+            let jsonData = try JSONSerialization.data(withJSONObject: parameters, options: [])
+            request.httpBody = jsonData
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             
-            // Assuming the response contains player1Score and player2Score as JSON data
-            if let data = data {
-                do {
-                    let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
-                    if let player1Score = json?["player1Score"] as? Int,
-                       let player2Score = json?["player2Score"] as? Int {
-                        DispatchQueue.main.async {
-                            self.player1Score = player1Score
-                            self.player2Score = player2Score
+            URLSession.shared.dataTask(with: request) { data, response, error in
+                // Handle the response or error
+                
+                // Assuming the response contains player1Score and player2Score as JSON data
+                if let data = data {
+                    do {
+                        let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
+                        if let player1Score = json?["player1Score"] as? Int,
+                           let player2Score = json?["player2Score"] as? Int {
+                            DispatchQueue.main.async {
+                                self.player1Score = player1Score
+                                self.player2Score = player2Score
+                            }
                         }
+                    } catch {
+                        print("Error parsing JSON: \(error)")
                     }
-                } catch {
-                    print("Error parsing JSON: \(error)")
                 }
-            }
-        }.resume()
+                
+            }.resume()
+        } catch {
+            print("Error serializing JSON: \(error)")
+        }
     }
 
     func sendPostRequestToEndpointNew(player1: String, player2: String) {
