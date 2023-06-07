@@ -18,18 +18,6 @@ const port = "9000"
 //   console.log(gameHistory);
 // }
 async function GameReset(){
-  exec("rm games.json", (error, stdout, stderr) => {
-    if (error) {
-      console.error(`Error: ${error.message}`);
-      return;
-    }
-    if (stderr) {
-      console.error(`stderr: ${stderr}`);
-      return;
-    }
-    console.log(`stdout: ${stdout}`);
-    console.log('File Deleted!');
-  });
   exec("git checkout main -- games.json", (error, stdout, stderr) => {
     if (error) {
       console.error(`Error: ${error.message}`);
