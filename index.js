@@ -1,6 +1,9 @@
 const fs = require('fs');
 const fastify = require('fastify')();
 const simpleGit = require('simple-git');
+const { v4: uuidv4 } = require('uuid');
+const { exec } = require('child_process');
+
 const port = "9000"
 
 
@@ -23,6 +26,20 @@ async function runGitPull() {
   } catch (error) {
     console.error('Error during git pull:', error);
   }
+}
+async function runNpmInstall() {
+  exec('npm install', (error, stdout, stderr) => {
+    if (error) {
+      console.error(`Error: ${error.message}`);
+      return;
+    }
+    if (stderr) {
+      console.error(`stderr: ${stderr}`);
+      return;
+    }
+    console.log(`stdout: ${stdout}`);
+    console.log('npm install completed successfully!');
+  });
 }
 
 // fastify.post('/win', (request, reply) => {
@@ -73,9 +90,9 @@ fastify.post('/win', (req, res) => {
 
 // Utility functions to generate a game ID and get the current date/time
 function generateGameId() {
-  // Generate a unique ID using a suitable algorithm
-  return 'ABC123XYZ'; // Example value, modify as needed
+  return uuidv4();
 }
+
 
 function getCurrentDate() {
   // Get the current date in the desired format
@@ -94,6 +111,12 @@ function getCurrentTime() {
 fastify.post('/ServerUpdate', (request, reply) => {
   console.log("Updating");
   runGitPull();
+  reply.send({ message: 'Success' });
+});
+
+fastify.post('/ServerNpm', (request, reply) => {
+  console.log("Updating");
+  runNpmInstall();
   reply.send({ message: 'Success' });
 });
 
