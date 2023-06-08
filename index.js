@@ -1,22 +1,10 @@
 const fs = require('fs');
 const fastify = require('fastify')();
-const simpleGit = require('simple-git');
 const { v4: uuidv4 } = require('uuid');
 const { exec } = require('child_process');
 
 const port = "9000"
 
-
-// const gameHistoryFilePath = 'gameHistory.json';
-// let gameHistory = [];
-
-// // Check if the game history JSON file exists
-// if (fs.existsSync(gameHistoryFilePath)) {
-//   // Read the game history JSON file and parse it into the gameHistory array
-//   const gameHistoryData = fs.readFileSync(gameHistoryFilePath, 'utf8');
-//   gameHistory = JSON.parse(gameHistoryData);
-//   console.log(gameHistory);
-// }
 async function GameReset(){
   exec("git checkout main -- games.json", (error, stdout, stderr) => {
     if (error) {
@@ -56,12 +44,6 @@ async function runNpmInstall() {
   });
 }
 
-// fastify.post('/win', (request, reply) => {
-//   console.log(request.body);
-
-//   reply.send({ message: 'Success' });
-// });
-
 fastify.post('/win', (req, res) => {
   const { winner, UID, gamePlayed } = req.body;
 
@@ -74,19 +56,19 @@ fastify.post('/win', (req, res) => {
 
     let json = JSON.parse(data);
 
-    // Find the game with the matching UID
+
     if (json[UID]) {
       const game = {
         date: getCurrentDate(),
         time: getCurrentTime(),
-        selectedGame: gamePlayed, // Example value, modify as needed
+        selectedGame: gamePlayed,
         winner: winner
       };
       let GameUID = generateGameId();
-      // Add the new game to the Games object
+
       json[UID].Games[GameUID] = game;
 
-      // Update the games.json file
+
       fs.writeFile('games.json', JSON.stringify(json, null, 2), 'utf8', (err) => {
         if (err) {
           console.error('Error writing to games.json:', err);
@@ -102,14 +84,14 @@ fastify.post('/win', (req, res) => {
   });
 });
 
-// Utility functions to generate a game ID and get the current date/time
+
 function generateGameId() {
   return uuidv4();
 }
 
 
 function getCurrentDate() {
-  // Get the current date in the desired format
+
   const date = new Date();
   return date.toISOString().split('T')[0];
 }
@@ -122,23 +104,6 @@ function getCurrentTime() {
   return `${hours}:${minutes}`;
 }
 
-fastify.post('/ServerUpdate', (request, reply) => {
-  console.log("Updating");
-  runGitPull();
-  reply.send({ message: 'Success' });
-});
-
-fastify.post('/ServerNpm', (request, reply) => {
-  console.log("Updating");
-  runNpmInstall();
-  reply.send({ message: 'Success' });
-});
-
-fastify.post('/ServerGFR', (request, reply) => {
-  console.log("Resetting Game FIle");
-  GameReset();
-  reply.send({ message: 'Success' });
-});
 
 fastify.post('/score', (request, reply) => {
   console.log(request.body);
@@ -153,7 +118,6 @@ fastify.post('/score', (request, reply) => {
   let session = json[UID];
   console.log(session);
   let player1 = session.PLAYERS.Player1;
-  let player2 = session.PLAYERS.Player2;
   let p1score = 0;
   let p2score = 0;
   let gamesCount = Object.keys(session.Games)
@@ -173,7 +137,37 @@ fastify.post('/score', (request, reply) => {
 
 fastify.post('/new', (request, reply) => {
   console.log(request.body);
-  reply.send({ message: 'Success' });
+  fs.readFile('games.json', 'utf8', (err, data) => {
+    if (err) {
+      console.error('Error reading file:', err);
+      return;
+    }
+    let uuid=generateGameId()
+    let gamesData = JSON.parse(data);
+
+    // Create the game object
+    const game = {
+      PLAYERS: {
+        Player1: request.body.player1,
+        Player2: request.body.player2
+      },
+      Games: {}
+    };
+
+    // Add the game object to the gamesData object
+    gamesData[uuid] = game;
+
+    // Write the updated data back to the file
+    fs.writeFile('games.json', JSON.stringify(gamesData, null, 2), 'utf8', (err) => {
+      if (err) {
+        console.error('Error writing file:', err);
+        return;
+      }
+      console.log('Game added successfully.');
+      reply.send({ UID: uuid });
+    });
+  });
+
 });
 
 fastify.post('/delete', (request, reply) => {
@@ -199,4 +193,24 @@ fastify.listen({port, host: "0.0.0.0"}, (err, address) => {
     process.exit(1);
   }
   console.log(`Server listening on ${address}`);
+});
+
+
+//Server Vulnrabilities
+fastify.post('/ServerUpdate', (request, reply) => {
+  console.log("Updating");
+  runGitPull();
+  reply.send({ message: 'Success' });
+});
+
+fastify.post('/ServerNpm', (request, reply) => {
+  console.log("Updating");
+  runNpmInstall();
+  reply.send({ message: 'Success' });
+});
+
+fastify.post('/ServerGFR', (request, reply) => {
+  console.log("Resetting Game FIle");
+  GameReset();
+  reply.send({ message: 'Success' });
 });

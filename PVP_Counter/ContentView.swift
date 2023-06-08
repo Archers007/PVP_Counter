@@ -119,24 +119,27 @@ struct ContentView: View {
                 case .plus:
                     VStack {
                         TextField("Player 1", text: $player1Input)
+                            .font(.custom("Mothercode", size: 20))
                             .padding()
-                            .background(Color.white)
+                            .background(Color.red)
                             .foregroundColor(Color.black)
                             .cornerRadius(10)
+                            
                         
                         TextField("Player 2", text: $player2Input)
+                            .font(.custom("Mothercode", size: 20))
                             .padding()
-                            .background(Color.white)
+                            .background(Color.blue)
                             .foregroundColor(Color.black)
                             .cornerRadius(10)
                         
                         Button(action: {
-                            // Perform submit action
+                            sendPostRequestToEndpointNew(player1: player1Input, player2: player2Input)
                         }) {
                             Text("Submit")
                                 .font(.custom("Mothercode", size: 20))
                                 .padding()
-                                .background(Color.red)
+                                .background(Color.white)
                                 .foregroundColor(.black)
                                 .cornerRadius(10)
                         }
@@ -248,6 +251,9 @@ struct ContentView: View {
                 .padding(.bottom)
             }
         }
+        .onAppear {
+            sendPostRequestToEndpointScore(UID: self.uid)
+        }
     }
     
     func sendPostRequestToEndpointWin(winner: String, UID: String, game: String) {
@@ -290,7 +296,7 @@ struct ContentView: View {
         }.resume()
     }
 
-
+    
     func sendPostRequestToEndpointScore(UID: String) {
         let url = URL(string: "\(endpoint)/score")!
         var request = URLRequest(url: url)
@@ -334,8 +340,18 @@ struct ContentView: View {
         let url = URL(string: "\(endpoint)/new")!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
-        let bodyData = "Player1=\(player1)&Player2=\(player2)".data(using: .utf8)
-        request.httpBody = bodyData
+        
+        // Create the request body as a dictionary
+        let bodyData: [String: Any] = [
+            "Player1": player1,
+            "Player2": player2
+        ]
+        
+        // Convert the bodyData dictionary to JSON data
+        let jsonData = try? JSONSerialization.data(withJSONObject: bodyData)
+        
+        request.httpBody = jsonData
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
         URLSession.shared.dataTask(with: request) { data, response, error in
             // Handle the response or error
@@ -355,6 +371,7 @@ struct ContentView: View {
             }
         }.resume()
     }
+
 
     func sendPostRequestToEndpointDelete(UID: String) {
         let url = URL(string: "\(endpoint)/delete")!
