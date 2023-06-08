@@ -355,20 +355,20 @@ struct ContentView: View {
         
         URLSession.shared.dataTask(with: request) { data, response, error in
             // Handle the response or error
-            
+            print(response)
             // Assuming the response contains the UID
-            if let data = data {
-                do {
-                    let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
-                    if let uidNEW = json?["UID"] as? String {
-                        DispatchQueue.main.async {
-                            self.sendPostRequestToEndpointOpen(UID: uidNEW)
-                        }
-                    }
-                } catch {
-                    print("Error parsing JSON: \(error)")
-                }
-            }
+//            if let data = data {
+//                do {
+//                    let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
+//                    if let uidNEW = json?["UID"] as? String {
+//                        DispatchQueue.main.async {
+//                            self.sendPostRequestToEndpointOpen(UID: uidNEW)
+//                        }
+//                    }
+//                } catch {
+//                    print("Error parsing JSON: \(error)")
+//                }
+//            }
         }.resume()
     }
 
