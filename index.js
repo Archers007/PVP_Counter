@@ -168,7 +168,7 @@ fastify.post('/new', (request, reply) => {
         return;
       }
       console.log('Game added successfully.');
-      reply.send({ "UID": uuid });
+      reply.send({ UID: uuid });
     });
   });
 
