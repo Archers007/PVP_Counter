@@ -14,6 +14,7 @@ struct ContentView: View {
     @State private var player1Score = 6
     @State private var player2Score = 9
     @State private var selectedGame = 0
+    @State private var showConfirmationAlert = false;
     
     @State private var date = ""
     @State private var time = ""
@@ -26,6 +27,7 @@ struct ContentView: View {
     @State private var player1Input = ""
     @State private var player2Input = ""
     @State private var uidInput = ""
+    @State private var openedGames: [String] = []
     
     var body: some View {
         ZStack {
@@ -154,7 +156,7 @@ struct ContentView: View {
                             .cornerRadius(10)
                         
                         Button(action: {
-                            // Perform open action
+                            sendPostRequestToEndpointOpen(UID: uidInput)
                         }) {
                             Text("Open")
                                 .font(.custom("Mothercode", size: 20))
@@ -162,6 +164,19 @@ struct ContentView: View {
                                 .background(Color.blue)
                                 .foregroundColor(.white)
                                 .cornerRadius(10)
+                        }
+                        
+                        ForEach(openedGames, id: \.self) { gameUID in
+                            Button(action: {
+                                sendPostRequestToEndpointOpen(UID: gameUID)
+                            }) {
+                                Text(gameUID)
+                                    .font(.custom("Mothercode", size: 20))
+                                    .padding()
+                                    .background(Color.yellow)
+                                    .foregroundColor(.white)
+                                    .cornerRadius(10)
+                            }
                         }
                     }
                     .padding()
@@ -180,7 +195,7 @@ struct ContentView: View {
                         }
                         
                         Button(action: {
-                            // Delete PVP action
+                            showConfirmationAlert = true
                         }) {
                             Text("Delete PVP")
                                 .font(.custom("Mothercode", size: 20))
@@ -203,6 +218,16 @@ struct ContentView: View {
                     }
                     .padding()
                     .foregroundColor(.white)
+                    .alert(isPresented: $showConfirmationAlert) {
+                        Alert(
+                            title: Text("Delete PVP"),
+                            message: Text("Are you sure you want to delete this PVP?"),
+                            primaryButton: .cancel(),
+                            secondaryButton: .destructive(Text("Delete"), action: {
+                                sendPostRequestToEndpointDelete(UID: uid)
+                            })
+                        )
+                    }
                 }
                 
                 Spacer()
@@ -360,9 +385,11 @@ struct ContentView: View {
                 do {
                     let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
                     if let uidNEW = json?["UID"] as? String {
-//                        DispatchQueue.main.async {
-//                            self.sendPostRequestToEndpointOpen(UID: uidNEW)
-//                        }
+                        DispatchQueue.main.async {
+                            self.player1Input = ""
+                            self.player2Input = ""
+                            self.sendPostRequestToEndpointOpen(UID: uidNEW)
+                        }
                         print(uidNEW)
                     }
                 } catch {
@@ -375,18 +402,6 @@ struct ContentView: View {
 
     func sendPostRequestToEndpointDelete(UID: String) {
         let url = URL(string: "\(endpoint)/delete")!
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        let bodyData = "UID=\(UID)".data(using: .utf8)
-        request.httpBody = bodyData
-        
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            // Handle the response or error
-        }.resume()
-    }
-
-    func sendPostRequestToEndpointOpen(UID: String) {
-        let url = URL(string: "\(endpoint)/open")!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         
@@ -407,6 +422,38 @@ struct ContentView: View {
             if let data = data {
                 do {
                     let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
+                    print(json)
+                } catch {
+                    print("Error parsing JSON: \(error)")
+                }
+            }
+        }.resume()
+    }
+
+    func sendPostRequestToEndpointOpen(UID: String) {
+        let url = URL(string: "\(endpoint)/open")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        
+        // Create the request body as a dictionary
+        let bodyData: [String: Any] = [
+            "UID":UID
+        ]
+        
+        // Convert the bodyData dictionary to JSON data
+        let jsonData = try? JSONSerialization.data(withJSONObject: bodyData)
+        
+        request.httpBody = jsonData
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        self.player1Input = ""
+        self.player2Input = ""
+        self.uid
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            // Handle the response or error
+            // Assuming the response contains the UID
+            if let data = data {
+                do {
+                    let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
                     if let p1 = json?["Player1"] as? String {
                         self.player1Name = p1
                     }
@@ -414,6 +461,9 @@ struct ContentView: View {
                         self.player2Name = p2
                     }
                     self.uid = UID
+                    if !self.openedGames.contains(UID) {
+                        self.openedGames.append(UID)
+                    }
                 } catch {
                     print("Error parsing JSON: \(error)")
                 }

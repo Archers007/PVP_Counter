@@ -176,8 +176,30 @@ fastify.post('/new', (request, reply) => {
 
 fastify.post('/delete', (request, reply) => {
   console.log(request.body);
-  reply.send({ message: 'Success' });
+  fs.readFile('games.json', 'utf8', (err, data) => {
+    if (err) {
+      console.error('Error reading file:', err);
+      return;
+    }
+    let uuid = request.body.UID;
+    let gamesData = JSON.parse(data);
+
+    // Delete the game object from the gamesData object
+    delete gamesData[uuid];
+
+    // Write the updated data back to the file
+    fs.writeFile('games.json', JSON.stringify(gamesData, null, 2), 'utf8', (err) => {
+      if (err) {
+        console.error('Error writing file:', err);
+        return;
+      }
+      console.log('Game deleted successfully.');
+      reply.send({ message: "DELETED LIKE THE DALEKS" });
+    });
+
+  });
 });
+
 
 fastify.post('/open', (request, reply) => {
   console.log(request.body);
@@ -197,7 +219,7 @@ fastify.post('/open', (request, reply) => {
 
 });
 
-fastify.post('/history', (request, reply) => {
+fastify.post('/history/:', (request, reply) => {
   console.log(request.body);
 
   reply.send({ message: 'Success' });
