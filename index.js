@@ -181,7 +181,19 @@ fastify.post('/delete', (request, reply) => {
 
 fastify.post('/open', (request, reply) => {
   console.log(request.body);
-  reply.send({ message: 'Success' });
+  const { UID } = request.body;
+  fs.readFile('games.json', 'utf8', (err, data) => {
+    if (err) {
+      console.error('Error reading games.json:', err);
+      return res.sendStatus(500);
+    }
+
+  let json = JSON.parse(data);
+  let player1 = json[UID].PLAYERS[0];
+  let player2 = json[UID].PLAYERS[1];
+
+  reply.send({ Player1: player1,Player2:player2 });
+  })
 
 });
 

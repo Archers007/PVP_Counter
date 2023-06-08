@@ -355,20 +355,20 @@ struct ContentView: View {
         
         URLSession.shared.dataTask(with: request) { data, response, error in
             // Handle the response or error
-            print(response)
             // Assuming the response contains the UID
-//            if let data = data {
-//                do {
-//                    let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
-//                    if let uidNEW = json?["UID"] as? String {
+            if let data = data {
+                do {
+                    let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
+                    if let uidNEW = json?["UID"] as? String {
 //                        DispatchQueue.main.async {
 //                            self.sendPostRequestToEndpointOpen(UID: uidNEW)
 //                        }
-//                    }
-//                } catch {
-//                    print("Error parsing JSON: \(error)")
-//                }
-//            }
+                        print(uidNEW)
+                    }
+                } catch {
+                    print("Error parsing JSON: \(error)")
+                }
+            }
         }.resume()
     }
 
@@ -389,30 +389,35 @@ struct ContentView: View {
         let url = URL(string: "\(endpoint)/open")!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
-        let bodyData = "UID=\(UID)".data(using: .utf8)
-        request.httpBody = bodyData
+        
+        // Create the request body as a dictionary
+        let bodyData: [String: Any] = [
+            "UID":UID
+        ]
+        
+        // Convert the bodyData dictionary to JSON data
+        let jsonData = try? JSONSerialization.data(withJSONObject: bodyData)
+        
+        request.httpBody = jsonData
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
         URLSession.shared.dataTask(with: request) { data, response, error in
             // Handle the response or error
-            
-            // Assuming the response contains player1Name and player2Name
+            // Assuming the response contains the UID
             if let data = data {
                 do {
                     let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
-                    if let player1Name = json?["player1Name"] as? String,
-                       let player2Name = json?["player2Name"] as? String {
-                        DispatchQueue.main.async {
-                            self.uid = UID
-                            self.player1Name = player1Name
-                            self.player2Name = player2Name
-                            self.sendPostRequestToEndpointScore(UID:uid)
-                        }
+                    if let p1 = json?["Player1"] as? String {
+                        self.player1Name = p1
                     }
+                    if let p2 = json?["Player2"] as? String {
+                        self.player2Name = p2
+                    }
+                    self.uid = UID
                 } catch {
                     print("Error parsing JSON: \(error)")
                 }
             }
-            
         }.resume()
     }
 
