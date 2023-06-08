@@ -152,8 +152,8 @@ fastify.post('/new', (request, reply) => {
     // Create the game object
     const game = {
       PLAYERS: {
-        Player1: request.body.player1,
-        Player2: request.body.player2
+        Player1: request.body.Player1,
+        Player2: request.body.Player2
       },
       Games: {}
     };
