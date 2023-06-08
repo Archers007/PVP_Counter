@@ -20,14 +20,18 @@ async function GameReset(){
   });
 }
 async function runGitPull() {
-  const git = simpleGit();
-
-  try {
-    await git.pull();
-    console.log('Git pull completed successfully.');
-  } catch (error) {
-    console.error('Error during git pull:', error);
-  }
+  exec("git pull", (error, stdout, stderr) => {
+    if (error) {
+      console.error(`Error: ${error.message}`);
+      return;
+    }
+    if (stderr) {
+      console.error(`stderr: ${stderr}`);
+      return;
+    }
+    console.log(`stdout: ${stdout}`);
+    console.log('Git Pulled');
+  });
 }
 async function runNpmInstall() {
   exec('npm install', (error, stdout, stderr) => {
