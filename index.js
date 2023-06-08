@@ -189,8 +189,8 @@ fastify.post('/open', (request, reply) => {
     }
 
   let json = JSON.parse(data);
-  let player1 = json[UID].PLAYERS[0];
-  let player2 = json[UID].PLAYERS[1];
+  let player1 = json[UID].PLAYERS.Player1;
+  let player2 = json[UID].PLAYERS.Player2;
 
   reply.send({ Player1: player1,Player2:player2 });
   })
