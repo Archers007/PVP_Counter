@@ -2,6 +2,8 @@ const fs = require('fs');
 const fastify = require('fastify')();
 const { v4: uuidv4 } = require('uuid');
 const { exec } = require('child_process');
+const fs = require('fs');
+const { promisify } = require('util');
 
 const port = "9000"
 
@@ -219,12 +221,28 @@ fastify.post('/open', (request, reply) => {
 
 });
 
-fastify.post('/history/:', (request, reply) => {
-  console.log(request.body);
+fastify.get('/history/:uid', (req, res) => {
+  const uid = req.params.uid;
 
-  reply.send({ message: 'Success' });
+  fs.readFile('games.json', 'utf8', (err, data) => {
+    if (err) {
+      console.error('Error reading games.json:', err);
+      res.sendStatus(500);
+      return;
+    }
+
+    try {
+      const games = JSON.parse(data);
+      const playerGames = games[uid].Games;
+      console.log(playerGames);
+
+      //create 
+    } catch (error) {
+      console.error('Error parsing games.json:', error);
+      res.sendStatus(500);
+    }
+  });
 });
-
 fastify.listen({port, host: "0.0.0.0"}, (err, address) => {
   if (err) {
     console.error(err);

@@ -447,7 +447,7 @@ struct ContentView: View {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         self.player1Input = ""
         self.player2Input = ""
-        self.uid
+        self.uidInput = ""
         URLSession.shared.dataTask(with: request) { data, response, error in
             // Handle the response or error
             // Assuming the response contains the UID
