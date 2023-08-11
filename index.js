@@ -1,8 +1,8 @@
-import { readFile, writeFile } from 'fs';
+const fs = require('fs');
 const fastify = require('fastify')();
-import { v4 as uuidv4 } from 'uuid';
-import { exec } from 'child_process';
-import { promisify } from 'util';
+const { v4: uuidv4 } = require('uuid');
+const { exec } = require('child_process');
+const { promisify } = require('util');
 
 const port = "9000"
 
@@ -53,7 +53,7 @@ fastify.post('/win', (req, res) => {
   const { winner, UID, gamePlayed } = req.body;
 
   // Read the games.json file
-  readFile('games.json', 'utf8', (err, data) => {
+  fs.readFile('games.json', 'utf8', (err, data) => {
     if (err) {
       console.error('Error reading games.json:', err);
       return res.sendStatus(500);
@@ -74,7 +74,7 @@ fastify.post('/win', (req, res) => {
       json[UID].Games[GameUID] = game;
 
 
-      writeFile('games.json', JSON.stringify(json, null, 2), 'utf8', (err) => {
+      fs.writeFile('games.json', JSON.stringify(json, null, 2), 'utf8', (err) => {
         if (err) {
           console.error('Error writing to games.json:', err);
           return res.sendStatus(500);
@@ -113,7 +113,7 @@ function getCurrentTime() {
 fastify.post('/score', (request, reply) => {
   console.log(request.body);
   const { UID } = request.body;
-  readFile('games.json', 'utf8', (err, data) => {
+  fs.readFile('games.json', 'utf8', (err, data) => {
     if (err) {
       console.error('Error reading games.json:', err);
       return res.sendStatus(500);
@@ -142,7 +142,7 @@ fastify.post('/score', (request, reply) => {
 
 fastify.post('/new', (request, reply) => {
   console.log(request.body);
-  readFile('games.json', 'utf8', (err, data) => {
+  fs.readFile('games.json', 'utf8', (err, data) => {
     if (err) {
       console.error('Error reading file:', err);
       return;
@@ -163,7 +163,7 @@ fastify.post('/new', (request, reply) => {
     gamesData[uuid] = game;
 
     // Write the updated data back to the file
-    writeFile('games.json', JSON.stringify(gamesData, null, 2), 'utf8', (err) => {
+    fs.writeFile('games.json', JSON.stringify(gamesData, null, 2), 'utf8', (err) => {
       if (err) {
         console.error('Error writing file:', err);
         return;
@@ -177,7 +177,7 @@ fastify.post('/new', (request, reply) => {
 
 fastify.post('/delete', (request, reply) => {
   console.log(request.body);
-  readFile('games.json', 'utf8', (err, data) => {
+  fs.readFile('games.json', 'utf8', (err, data) => {
     if (err) {
       console.error('Error reading file:', err);
       return;
@@ -189,7 +189,7 @@ fastify.post('/delete', (request, reply) => {
     delete gamesData[uuid];
 
     // Write the updated data back to the file
-    writeFile('games.json', JSON.stringify(gamesData, null, 2), 'utf8', (err) => {
+    fs.writeFile('games.json', JSON.stringify(gamesData, null, 2), 'utf8', (err) => {
       if (err) {
         console.error('Error writing file:', err);
         return;
@@ -205,7 +205,7 @@ fastify.post('/delete', (request, reply) => {
 fastify.post('/open', (request, reply) => {
   console.log(request.body);
   const { UID } = request.body;
-  readFile('games.json', 'utf8', (err, data) => {
+  fs.readFile('games.json', 'utf8', (err, data) => {
     if (err) {
       console.error('Error reading games.json:', err);
       return res.sendStatus(500);
@@ -223,7 +223,7 @@ fastify.post('/open', (request, reply) => {
 fastify.get('/history/:uid', (req, res) => {
   const uid = req.params.uid;
 
-  readFile('games.json', 'utf8', (err, data) => {
+  fs.readFile('games.json', 'utf8', (err, data) => {
     if (err) {
       console.error('Error reading games.json:', err);
       res.sendStatus(500);
